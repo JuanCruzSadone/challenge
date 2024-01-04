@@ -40,21 +40,21 @@ const Card = (): JSX.Element => {
     setCurrentLocation(a.data.city);
   };
 
-  const getSelectedLocationWeather = async () => {
+  const getSelectedLocationWeather = async (location: string) => {
     const res = await axios.get(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${currentLocation}&appid=${APK}&units=${"metric"}&cnt=39`
+      `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${APK}&units=${"metric"}&cnt=39`
     );
     const b = await axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${currentLocation}&appid=${APK}&units=${"metric"}`
+      `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${APK}&units=${"metric"}`
     );
     filterArrayByDate(res);
     setActualWeather(b.data);
   };
 
   useEffect(() => {
-    if (currentLocation === "Local") getCurrentLocationWeather();
-    getSelectedLocationWeather();
-  }, [currentLocation]);
+    getCurrentLocationWeather();
+  }, []);
+  useEffect(() => {}, [currentLocation]);
 
   const getActualDate = () => {
     const date = new Date();
@@ -66,7 +66,12 @@ const Card = (): JSX.Element => {
   };
 
   const onSetNewLocation = (location: string) => {
-    setCurrentLocation(location);
+    if (location === "Local") {
+      getCurrentLocationWeather();
+    } else {
+      getSelectedLocationWeather(location);
+      setCurrentLocation(location);
+    }
   };
 
   return (
@@ -77,7 +82,9 @@ const Card = (): JSX.Element => {
             <div className="date-container">
               <h2>Today</h2>
               <span className="dayname">{getActualDate()}</span>
-              <span className="datetime">{currentLocation === 'Local' ? '-' : currentLocation}</span>
+              <span className="datetime">
+                {currentLocation === "Local" ? "-" : currentLocation}
+              </span>
             </div>
             <div className="weather-container">
               <h1 className="weather-temp">
@@ -93,7 +100,7 @@ const Card = (): JSX.Element => {
 
       <div className="right-side-container">
         <div className="five-days-weather-container">
-          {fiveDaysWeather && currentLocation !== 'Local' ? (
+          {fiveDaysWeather ? (
             fiveDaysWeather.map((d) => {
               return (
                 <DailyWeatherCard
