@@ -54,7 +54,6 @@ const Card = (): JSX.Element => {
   useEffect(() => {
     getCurrentLocationWeather();
   }, []);
-  useEffect(() => {}, [currentLocation]);
 
   const getActualDate = () => {
     const date = new Date();
