@@ -121,9 +121,9 @@ const Card = (): JSX.Element => {
           ) : (
             locations.map((l) => {
               return (
-                <>
-                  <button onClick={() => onSetNewLocation(l)}>{l}</button>
-                </>
+                <button onClick={() => onSetNewLocation(l)} key={l}>
+                  {l}
+                </button>
               );
             })
           )}
